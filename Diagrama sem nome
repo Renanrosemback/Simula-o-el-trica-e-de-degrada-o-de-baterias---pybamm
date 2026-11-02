@@ -1,0 +1,198 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="4vaikUmKzkgppaMJSljW">
+    <mxGraphModel dx="1229" dy="627" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-1" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Classe&amp;nbsp;Otimizacao" vertex="1">
+          <mxGeometry height="160" width="170" x="100" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-2" parent="Iw4ywKnFUen4U63jiuJH-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Usa otimização &lt;b&gt;Brent-Dekker&lt;/b&gt; para buscar o valor de Nc que produz o menor custo a partir da fob:&lt;div&gt;FOB = Cinicial +Coper + Csubs - Vener - Vrest&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="170" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-4" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="270" y="210" as="sourcePoint" />
+            <mxPoint x="370" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-9" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Classe LCC" vertex="1">
+          <mxGeometry height="160" width="179" x="371" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-10" parent="Iw4ywKnFUen4U63jiuJH-9" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Utiliza a classe Simulação e a&amp;nbsp;PerfilPotencia para fazer toda a simulação do projeto e obter o custo que A variável de entrada (Nc) obteve a partir dos parâmetros atuais.&amp;nbsp;&amp;nbsp;" vertex="1">
+          <mxGeometry height="140" width="170" x="4.5" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="Nc" vertex="1">
+          <mxGeometry height="40" width="50" x="290" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-13" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;fontSize=18;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="440" y="350" as="sourcePoint" />
+            <mxPoint x="440" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-14" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="180" y="350" as="sourcePoint" />
+            <mxPoint x="440" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-16" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="180" y="350" as="sourcePoint" />
+            <mxPoint x="180" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="custo" vertex="1">
+          <mxGeometry height="40" width="50" x="260" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-18" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="550" y="250" as="sourcePoint" />
+            <mxPoint x="620" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-19" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Classe Simulacao" vertex="1">
+          <mxGeometry height="160" width="179" x="620" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-20" parent="Iw4ywKnFUen4U63jiuJH-19" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Utiliza as classes de degradação e bateria para descobrir meses em que são necessárias as trocas e quanto de energia é aproveitada no processo.&amp;nbsp;" vertex="1">
+          <mxGeometry height="140" width="170" x="4.5" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-22" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="550" y="210" as="sourcePoint" />
+            <mxPoint x="620" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="Nc" vertex="1">
+          <mxGeometry height="40" width="50" x="560" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-24" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="P_pack" vertex="1">
+          <mxGeometry height="40" width="50" x="560" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-25" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Classe PerfilPotencia" vertex="1">
+          <mxGeometry height="160" width="179" x="40" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-26" parent="Iw4ywKnFUen4U63jiuJH-25" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Utiliza a classe Simulação e a&amp;nbsp;PerfilPotencia para fazer toda a simulação do projeto e obter o custo que A variável de entrada (Nc) obteve a partir dos parâmetros atuais.&amp;nbsp;&amp;nbsp;" vertex="1">
+          <mxGeometry height="140" width="170" x="4.5" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-27" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="219" y="479.29" as="sourcePoint" />
+            <mxPoint x="479" y="479.29" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-28" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.604;entryY=1.021;entryDx=0;entryDy=0;entryPerimeter=0;" target="Iw4ywKnFUen4U63jiuJH-10" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="480" y="480" as="sourcePoint" />
+            <mxPoint x="480" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="P_pack" vertex="1">
+          <mxGeometry height="40" width="50" x="310" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-30" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;strokeColor=default;dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="219" y="510" as="sourcePoint" />
+            <mxPoint x="640" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-31" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.604;entryY=1.021;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="640" y="510" as="sourcePoint" />
+            <mxPoint x="640" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-34" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Classe Bateria" vertex="1">
+          <mxGeometry height="160" width="179" x="388" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-35" parent="Iw4ywKnFUen4U63jiuJH-34" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Utiliza a classe Simulação e a&amp;nbsp;PerfilPotencia para fazer toda a simulação do projeto e obter o custo que A variável de entrada (Nc) obteve a partir dos parâmetros atuais.&amp;nbsp;&amp;nbsp;" vertex="1">
+          <mxGeometry height="140" width="170" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-36" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Classe BatteryDegradation" vertex="1">
+          <mxGeometry height="160" width="179" x="635.5" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-37" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Utiliza a classe Simulação e a&amp;nbsp;PerfilPotencia para fazer toda a simulação do projeto e obter o custo que A variável de entrada (Nc) obteve a partir dos parâmetros atuais.&amp;nbsp;&amp;nbsp;" vertex="1">
+          <mxGeometry height="140" width="170" x="640" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-40" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="476.79" y="580" as="sourcePoint" />
+            <mxPoint x="476.79" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-42" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.668;entryY=0.981;entryDx=0;entryDy=0;entryPerimeter=0;" target="Iw4ywKnFUen4U63jiuJH-20" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="742" y="650" as="sourcePoint" />
+            <mxPoint x="740" y="453" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-44" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="475" y="580" as="sourcePoint" />
+            <mxPoint x="690" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-45" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="690" y="580" as="sourcePoint" />
+            <mxPoint x="690" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-47" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="680" y="60" as="sourcePoint" />
+            <mxPoint x="680" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-48" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="470" y="60" as="sourcePoint" />
+            <mxPoint x="680" y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-50" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="470" y="60" as="sourcePoint" />
+            <mxPoint x="470" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-51" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="750" y="20" as="sourcePoint" />
+            <mxPoint x="750" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-52" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="20" />
+            </Array>
+            <mxPoint x="540" y="20" as="sourcePoint" />
+            <mxPoint x="750" y="20" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-54" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="430" y="20" as="sourcePoint" />
+            <mxPoint x="430" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-55" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="Eregen_aproveitada" vertex="1">
+          <mxGeometry height="40" width="50" x="550" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Iw4ywKnFUen4U63jiuJH-56" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=17;fontStyle=1" value="Meses de troca" vertex="1">
+          <mxGeometry height="40" width="110" x="530" y="65" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
