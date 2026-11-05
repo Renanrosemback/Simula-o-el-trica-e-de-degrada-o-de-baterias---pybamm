@@ -17,7 +17,7 @@ import winsound
 #========================================================================================
 #POTÊNCIA
 #========================================================================================
-segundos_simulados = 13*1590 #5horas 
+segundos_simulados = 24*1590 #5horas 
 
 pot = PerfilPotencia()
 #P_unico = pot.leitura_csv() #entra no STROE, porque é modulado lá dentro
@@ -136,26 +136,27 @@ class Bateria:
         
         return coefs1, coefs2
 
-    def _soc_filter(self): 
-        #alterado
-        #  para um de 0 a 100 diretamente na variavel
-        if self.soc > self.soc_max_frac:
-            self.soc = self.soc_max_frac
-        elif self.soc < self.soc_min_frac:
-            self.soc = self.soc_min_frac
     
     def _calcula_corrente(self, pot_t, V_bess_prev):
         """
-        Define a corrente a partir da tensão de acordo com os limites
-        de corrente nominais de saturação."""
-        #alteração: retirei o Npb
+        Define a corrente a partir da tensao de acordo com os limites
+        de corrente nominais de saturacao. Além de lmitar o máximo de corrente que 
+        pode ser retirada devido a saturação pelo soc"""
+        #alteracao: retirei o Npb
         I = pot_t / (V_bess_prev) 
-        #limitação de corrente retirada 
+        
         if I > self.Ilim:
             I = self.Ilim
         elif I < -self.Ilim:
                 I = -self.Ilim
-        
+
+        I_min_soc = ((self.soc_min_frac - self.soc)*self.CAh*3600/self.DT)
+
+        I_max_soc = ((self.soc_max_frac - self.soc)*self.CAh * 3600 / self.DT)
+
+        # Corrente efetivamente aplicada
+        I = np.clip(I, I_min_soc, I_max_soc)
+
         return I
 
     def _atualiza_tensao_ramos_zarc(self, v1, v2, coefs1, coefs2, I):
@@ -176,7 +177,8 @@ class Bateria:
             """
             v_bess = ocv + I * self.Rs + sum_v
             return v_bess
-    
+
+
     def simular_celula(self, P_pack):
         """
         Simula a dinamica eletrica (Rs + ZARC1 + ZARC2) e a integracao de SOC de
@@ -212,56 +214,45 @@ class Bateria:
         v1 = [0.0, 0.0, 0.0, 0.0, 0.0]
         v2 = [0.0, 0.0, 0.0, 0.0, 0.0]
 
-        #Definição variáveis de saída:
+        #Definicao variaveis de saida:
         SOC_pct = [0.0] * n
         P_bess_filtrada = [0.0] * n
-
-        I_hist = [0.0] * n #novidade 
-        V_hist = [0.0] * n #novidade 
-        V_bess = [0.0] * n #novidade 
-        #Medições dos componentes da equação de tensão
-        V_hist1 = [0.0] * n #novidade 
-        V_hist2 = [0.0] * n #novidade 
-        V_hist3 = [0.0] * n #novidade 
+        I_hist = [0.0] * n 
+        V_hist = [0.0] * n 
         
         ocv = self._ocv()
-        #alteração: apaguei o Nsb*
-        V_bess_prev = ocv 
+        v_bess = ocv 
         sum_v = sum(v1) + sum(v2)
+
+        #condicoes iniciais: #supondo antes da ativacao da bateria
+        SOC_pct[0] = self.soc * 100
+        P_bess_filtrada[0] = 0
+        I_hist[0] = 0
+        V_hist[0] = v_bess #v_bess[i-1] 
         
-        for i in range(n):
-            SOC_pct[i] = self.soc * 100.0 
-            pot_t = P_unico[i]
+        for i in range(1, n):
+            pot_t = P_unico[i] #variavel de entrada
 
+            I = self._calcula_corrente(pot_t, v_bess) #I[i] - a partir de v_bess[i-1]
             
-            I = self._calcula_corrente(pot_t, V_bess_prev)  
+            self.soc += I / (self.CAh * 3600.0) #soc[i]
+            
+            v1, v2 = self._atualiza_tensao_ramos_zarc(v1, v2, coefs1, coefs2, I) #zarc[i]
 
-            
-            dentro_dos_limites = self.soc_min_frac < self.soc < self.soc_max_frac
-            if dentro_dos_limites:
-                v_bess = self._calcula_tensao(ocv, I, sum_v) 
-                P_bess_filtrada[i] = I * self.Npb*self.Nsb * v_bess
-                
-            
-            self.soc += I / (self.CAh * 3600.0) 
-            self._soc_filter()
-            ocv = self._ocv()
-            
-            v1, v2 = self._atualiza_tensao_ramos_zarc(v1, v2, coefs1, coefs2, I)
-            sum_v = sum(v1) + sum(v2)
+            ocv = self._ocv() 
+            sum_v = sum(v1) + sum(v2) #ovc[i]
 
-            #alteração: retirei o Nsb
-            V_bess_prev = (ocv + I * self.Rs + sum_v)
+            v_bess = self._calcula_tensao(ocv, I, sum_v) #v_bess[i]
 
-            #novidades:
+            P_bess = I * self.Npb * self.Nsb * v_bess #p_bess[i]
+
+            #salvando resultados
             I_hist[i] = I
-            V_hist[i] = V_bess_prev
-            #V_bess[i] = v_bess
-            #V_hist1[i] = I * self.Rs
-            #V_hist2[i] = sum_v
-            #V_hist3[i] = ocv
-
-        return SOC_pct, I_hist, V_hist, V_hist1, V_hist2, V_hist3
+            V_hist[i] = v_bess
+            SOC_pct[i] = self.soc * 100.0
+            P_bess_filtrada[i] = P_bess
+                
+        return SOC_pct, P_bess_filtrada, I_hist, V_hist
     
     def aplicar_degradacao(
         self,
