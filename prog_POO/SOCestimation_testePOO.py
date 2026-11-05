@@ -193,7 +193,7 @@ class Simulacao:
             inicio_mes = time.perf_counter()
     
             # 1 - FAZENDO SIMUAÇÃO BATERIA:
-            SOC_pct, P_bess = self.bateria.simular_celula(self.mission_day_pot)
+            SOC_pct, P_bess, _, _ = self.bateria.simular_celula(self.mission_day_pot)
         
             # 2 - RESULTADOS ENERGÉTICOS
             mission_day_SOC = np.asarray(SOC_pct)

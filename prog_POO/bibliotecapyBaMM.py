@@ -17,7 +17,7 @@ import winsound
 #========================================================================================
 #POTÊNCIA
 #========================================================================================
-segundos_simulados = 24*1590 #5horas 
+segundos_simulados = 2*1590 #5horas 
 
 pot = PerfilPotencia()
 #P_unico = pot.leitura_csv() #entra no STROE, porque é modulado lá dentro
@@ -136,7 +136,6 @@ class Bateria:
         
         return coefs1, coefs2
 
-    
     def _calcula_corrente(self, pot_t, V_bess_prev):
         """
         Define a corrente a partir da tensao de acordo com os limites
@@ -428,7 +427,7 @@ class BateriaPyBaMM():
 
 inicio = time.perf_counter() 
 pack1 = Bateria(Npb=1000)  #essa classe de bateria está alterada para obter somente o SOC
-SOC_pct, I_hist, V_hist, V_hist1, V_hist2, V_hist3 = pack1.simular_celula(P_pack= P_unico)
+SOC_pct, P_bess_filtrada, I_hist, V_hist = pack1.simular_celula(P_pack= P_unico)
 tempo_execucao = time.perf_counter() - inicio
 print(f'O tempo de execução para uma célula do fabrício foi: {tempo_execucao}')
 
@@ -448,8 +447,8 @@ corrente, tensao, tempop, perda_CAh, CAh_atual = bateria2.resultados_SPM()
 
 tempof = np.arange(0, len(P_unico), 1)
 V_hist = np.array(V_hist)
-V_hist1 = np.array(V_hist1)
 I_hist = -np.array(I_hist) #tem que inverter a corrente para ajustar as convenções
+P_bess_filtrada = -np.array(P_bess_filtrada) #tem que inverter a corrente para ajustar as convenções
 
 #POTENCIAS CONFERIDAS: 
 Pot_stroe = V_hist*I_hist
@@ -531,6 +530,39 @@ plt.title('Evolução da capacidade da célula - SPM')
 plt.legend(fontsize="small")
 plt.grid()
 plt.show()
+
+#PLOTANDO EM CONJUNTO VALORES OBTIDOS PELO FABRICIO 
+
+
+fig, axs = plt.subplots(4, 1, figsize=(12, 10), sharex=True)
+# 1. SOC
+axs[0].plot(tempof, SOC_pct, color='green')
+axs[0].set_ylabel('SOC [%]')
+axs[0].set_title('Estado de carga (SOC)')
+axs[0].grid()
+
+# 2. Potência
+axs[1].plot(tempof, P_bess_filtrada, color='blue')
+axs[1].set_ylabel('Potência [W]')
+axs[1].set_title('Potência da bateria')
+axs[1].grid()
+
+# 3. Corrente
+axs[2].plot(tempof, I_hist, color='red')
+axs[2].set_ylabel('Corrente [A]')
+axs[2].set_title('Corrente da célula')
+axs[2].grid()
+
+# 4. Tensão
+axs[3].plot(tempof, V_hist, color='orange')
+axs[3].set_ylabel('Tensão [V]')
+axs[3].set_xlabel('Tempo [s]')
+axs[3].set_title('Tensão da célula')
+axs[3].grid()
+
+plt.tight_layout()
+plt.show()
+
 
 #OBTENDO ERRO ABSOLUTO DAS CORRENTES:
 '''plt.figure()

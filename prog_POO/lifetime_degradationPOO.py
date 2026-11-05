@@ -135,7 +135,7 @@ P_pack = pot.carregar_perfil_potencia()
 
 inicio = time.perf_counter() 
 pack1 = Bateria( Npb=1000) #limita a parada para nao 
-SOC_pct, P_bess_filtrada = pack1.simular_celula(P_pack=P_pack)
+SOC_pct, P_bess_filtrada, _, _ = pack1.simular_celula(P_pack=P_pack)
 tempo_execucao = time.perf_counter() - inicio
 
 
@@ -143,7 +143,7 @@ print(f'O tempo de execução para 1000 células {tempo_execucao}')
 
 inicio = time.perf_counter() 
 pack1 = Bateria( Npb=3000) #limita a parada para nao 
-SOC_pct, P_bess_filtrada = pack1.simular_celula(P_pack=P_pack)
+SOC_pct, P_bess_filtrada, _, _ = pack1.simular_celula(P_pack=P_pack)
 tempo_execucao = time.perf_counter() - inicio
 
 print(f'O tempo de execução para 3000 células {tempo_execucao}')

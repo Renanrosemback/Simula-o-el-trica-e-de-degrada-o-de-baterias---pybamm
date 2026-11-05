@@ -9,16 +9,15 @@ class Bateria:
     DT = config.DT  # s - passo fixo, igual ao FixedStep=1 do .plecs original
     OCV_TABLE = config.OCV_TABLE #valores LUT no PLECS
     SOC_STEP = config.SOC_STEP #medidos a partir de 5% de SOC = 0.05
-    
-    SOCmax=config.SOCmax
-    SOCmin=config.SOCmin
+
+    #alterado:
+    SOCmax=80
+    SOCmin=20
     SOCi0 = config.SOCi0
-    
     CAh0=config.CAh0
     Cr = config.Cr
-    
     Nsb=config.Nsb
-    
+
     def __init__(self, Rs=config.Rs0, R1=config.R10,
                R2=config.R20, Q1=config.Q10, Q2=config.Q20, 
                Npb=config.Npb_padrao):
@@ -28,15 +27,12 @@ class Bateria:
         self.Q1 = Q1
         self.Q2 = Q2 
         self.CAh = Bateria.CAh0
-        
         self.soc = Bateria.SOCi0 / 100.0 #valor do soc de 0 até 1
         
-        #Parâmetros de saturação:
         self.soc_max_frac = Bateria.SOCmax / 100.0 #0.8
         self.soc_min_frac = Bateria.SOCmin / 100.0 #0.2
         self.Ilim = Bateria.CAh0 * Bateria.Cr 
         
-        #Número de céluas: características de objeto. 
         self.Npb = Npb
         self.Nsb = Bateria.Nsb #não pode ser alterada
     
@@ -54,7 +50,6 @@ class Bateria:
         frac = idx_f - idx0
         return Bateria.OCV_TABLE[idx0] + frac * (Bateria.OCV_TABLE[idx0 + 1]
                                                  - Bateria.OCV_TABLE[idx0])
-    
     
     def calc_zarc_params(self):
         """
@@ -86,7 +81,6 @@ class Bateria:
                     Ca2=Ca2, Ra2=Ra2, Cb2=Cb2, Rb2=Rb2, Cc2=Cc2, Rc2=Rc2, Cd2=Cd2, Rd2=Rd2, Ce2=Ce2, Re2=Re2)
         return zarc
     
-    
     def _zoh_coeffs(self, R, C, dt=config.DT):
         """
         Coeficientes de discretizacao exata (zero-order hold, corrente
@@ -113,21 +107,26 @@ class Bateria:
         
         return coefs1, coefs2
 
-    def _soc_filter(self):
-        if self.soc > self.soc_max_frac:
-            self.soc = self.soc_max_frac
-        elif self.soc < self.soc_min_frac:
-            self.soc = self.soc_min_frac
-    
     def _calcula_corrente(self, pot_t, V_bess_prev):
         """
-        Define a corrente a partir da tensão de acordo com os limites
-        de corrente nominais de saturação."""
-        I = pot_t / (self.Npb * V_bess_prev) 
+        Define a corrente a partir da tensao de acordo com os limites
+        de corrente nominais de saturacao. Além de lmitar o máximo de corrente que 
+        pode ser retirada devido a saturação pelo soc"""
+        #alteracao: retirei o Npb
+        I = pot_t / (V_bess_prev) 
+        
         if I > self.Ilim:
             I = self.Ilim
         elif I < -self.Ilim:
                 I = -self.Ilim
+
+        I_min_soc = ((self.soc_min_frac - self.soc)*self.CAh*3600/self.DT)
+
+        I_max_soc = ((self.soc_max_frac - self.soc)*self.CAh * 3600 / self.DT)
+
+        # Corrente efetivamente aplicada
+        I = np.clip(I, I_min_soc, I_max_soc)
+
         return I
 
     def _atualiza_tensao_ramos_zarc(self, v1, v2, coefs1, coefs2, I):
@@ -140,13 +139,15 @@ class Bateria:
             
         
         return v1, v2
-    
+
     def _calcula_tensao(self, ocv, I, sum_v):
-        """
-        Serve para obter a tensão Vbees a partir do zarc, fonte não ideal ocv e 
-        resistencia Rs
-        """
-        return self.Nsb * (ocv - I * self.Rs - sum_v)
+            """
+            Serve para obter a tensão Vbees a partir do zarc, fonte não ideal ocv e 
+            resistencia Rs
+            """
+            v_bess = ocv + I * self.Rs + sum_v
+            return v_bess
+
 
     def simular_celula(self, P_pack):
         """
@@ -173,45 +174,55 @@ class Bateria:
         (ja multiplicada por Npb), zerada quando o SOC de inicio de passo esta
         fora do intervalo aberto (SOCmin, SOCmax).
         """
-        n = len(P_pack)
+        #alteração: P_unico fica mais simples, já que imaginamos
+        #que a potência dividida para cada célula é a mesma, fica mais 
+        #fácil já deixar isso explicito.
+        P_unico = P_pack/(self.Npb*self.Nsb)
+        n = len(P_unico)
         coefs1, coefs2 = self._branch_coeffs()
         
-        #São as listas de tensão de cada um dos ramos que simulam o zarc
         v1 = [0.0, 0.0, 0.0, 0.0, 0.0]
         v2 = [0.0, 0.0, 0.0, 0.0, 0.0]
 
-        #Definição variáveis de saída:
+        #Definicao variaveis de saida:
         SOC_pct = [0.0] * n
-        P_bess_filtrada = [0.0] * n #É a potência que de fato passa pela bateria.
+        P_bess_filtrada = [0.0] * n
+        I_hist = [0.0] * n 
+        V_hist = [0.0] * n 
         
         ocv = self._ocv()
-        V_bess_prev = self.Nsb * ocv #calculo da tensão inicial
+        v_bess = ocv 
         sum_v = sum(v1) + sum(v2)
-        
-        
-        for i in range(n):
-            SOC_pct[i] = self.soc * 100.0 
-            
-            pot_t = P_pack[i]
-            I = self._calcula_corrente(pot_t, V_bess_prev)
-            
-            
-            dentro_dos_limites = self.soc_min_frac < self.soc < self.soc_max_frac
-            if dentro_dos_limites:
-                v_bess = self._calcula_tensao(ocv, I, sum_v) 
-                P_bess_filtrada[i] = I * self.Npb * v_bess
-            
-            #isso aqui na prática é um integrador de coulomb:
-            self.soc += I / (self.CAh * 3600.0) 
-            self._soc_filter()
-            ocv = self._ocv()
-            
-            v1, v2 = self._atualiza_tensao_ramos_zarc(v1, v2, coefs1, coefs2, I)
-            sum_v = sum(v1) + sum(v2)
-            
-            V_bess_prev = self.Nsb * (ocv - I * self.Rs - sum_v)
 
-        return SOC_pct, P_bess_filtrada
+        #condicoes iniciais: #supondo antes da ativacao da bateria
+        SOC_pct[0] = self.soc * 100
+        P_bess_filtrada[0] = 0
+        I_hist[0] = 0
+        V_hist[0] = v_bess #v_bess[i-1] 
+        
+        for i in range(1, n):
+            pot_t = P_unico[i] #variavel de entrada
+
+            I = self._calcula_corrente(pot_t, v_bess) #I[i] - a partir de v_bess[i-1]
+            
+            self.soc += I / (self.CAh * 3600.0) #soc[i]
+            
+            v1, v2 = self._atualiza_tensao_ramos_zarc(v1, v2, coefs1, coefs2, I) #zarc[i]
+
+            ocv = self._ocv() 
+            sum_v = sum(v1) + sum(v2) #ovc[i]
+
+            v_bess = self._calcula_tensao(ocv, I, sum_v) #v_bess[i]
+
+            P_bess = I * self.Npb * self.Nsb * v_bess #p_bess[i]
+
+            #salvando resultados
+            I_hist[i] = I
+            V_hist[i] = v_bess
+            SOC_pct[i] = self.soc * 100.0
+            P_bess_filtrada[i] = P_bess
+                
+        return SOC_pct, P_bess_filtrada, I_hist, V_hist
     
     def aplicar_degradacao(
         self,
